@@ -8,7 +8,7 @@ const Schemes = require('./scheme-model')
   }
 */
 const checkSchemeId = (req, res, next) => {
-
+ next()
 }
 
 /*

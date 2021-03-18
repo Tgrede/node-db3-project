@@ -27,7 +27,40 @@ function find() { // EXERCISE A
 
 }
 
-function findById(scheme_id) { // EXERCISE B
+async function findById(scheme_id) { // EXERCISE B
+  
+  // const schemeSteps = await db('schemes')
+  // .leftJoin('steps', 'schemes.scheme_id', 'steps.scheme_id' )
+  // .select('schemes.scheme_name', 'steps.*')
+  // .where(`schemes.scheme_id`, scheme_id)
+  // .orderBy('steps.step_number', 'asc')
+
+  const schemes = await db('schemes')
+
+  const schemeStepsFiltered = await db('schemes')
+  .leftJoin('steps', 'schemes.scheme_id', 'steps.scheme_id' )
+  .select('steps.step_id', 'steps.step_number', 'steps.instructions')
+  .where(`schemes.scheme_id`, scheme_id)
+  .orderBy('steps.step_number', 'asc')
+  
+  const schemeObj = {...schemes[scheme_id - 1], steps: schemeStepsFiltered}
+  
+  if(schemeObj.steps[0].step_id === null){
+    const emptyScheme = {...schemeObj, steps: []}
+    return emptyScheme
+  } else {
+    return schemeObj
+  }
+
+  // if(schemeObj.steps.length === 0) {
+  //   console.log('test')
+  //   return 7
+  // } else {
+  //   return schemeObj
+  // }
+
+  
+  
   /*
     1B- Study the SQL query below running it in SQLite Studio against `data/schemes.db3`:
 
