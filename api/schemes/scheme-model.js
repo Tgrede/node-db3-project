@@ -44,8 +44,12 @@ async function findById(scheme_id) { // EXERCISE B
   .orderBy('steps.step_number', 'asc')
   
   const schemeObj = {...schemes[scheme_id - 1], steps: schemeStepsFiltered}
-  
-  if(schemeObj.steps[0].step_id === null){
+  if(!schemeObj.scheme_name){
+    return null
+  }
+  console.log(schemeObj.scheme_name)
+
+  if(!schemeObj.steps[0].step_id){
     const emptyScheme = {...schemeObj, steps: []}
     return emptyScheme
   } else {
