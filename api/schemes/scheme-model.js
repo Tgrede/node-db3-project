@@ -1,7 +1,11 @@
+const db = require('../../data/db-config')
+
 function find() { // EXERCISE A
   /*
     1A- Study the SQL query below running it in SQLite Studio against `data/schemes.db3`.
     What happens if we change from a LEFT join to an INNER join?
+
+    ~we would lose the 'have fun' scheme, as it currently doesnt have any steps.
 
       SELECT
           sc.*,
@@ -15,9 +19,48 @@ function find() { // EXERCISE A
     2A- When you have a grasp on the query go ahead and build it in Knex.
     Return from this function the resulting dataset.
   */
+  return db('schemes')
+  .leftJoin('steps', 'schemes.scheme_id', 'steps.scheme_id' )
+  .select('schemes.*').count('steps.step_id', {as: 'number_of_steps'})
+  .groupBy('schemes.scheme_id')
+  .orderBy('schemes.scheme_id', 'asc')
+
 }
 
-function findById(scheme_id) { // EXERCISE B
+async function findById(scheme_id) { // EXERCISE B
+  
+  // const schemeSteps = await db('schemes')
+  // .leftJoin('steps', 'schemes.scheme_id', 'steps.scheme_id' )
+  // .select('schemes.scheme_name', 'steps.*')
+  // .where(`schemes.scheme_id`, scheme_id)
+  // .orderBy('steps.step_number', 'asc')
+
+  const schemes = await db('schemes')
+
+  const schemeStepsFiltered = await db('schemes')
+  .leftJoin('steps', 'schemes.scheme_id', 'steps.scheme_id' )
+  .select('steps.step_id', 'steps.step_number', 'steps.instructions')
+  .where(`schemes.scheme_id`, scheme_id)
+  .orderBy('steps.step_number', 'asc')
+  
+  const schemeObj = {...schemes[scheme_id - 1], steps: schemeStepsFiltered}
+  
+  if(schemeObj.steps[0].step_id === null){
+    const emptyScheme = {...schemeObj, steps: []}
+    return emptyScheme
+  } else {
+    return schemeObj
+  }
+
+  // if(schemeObj.steps.length === 0) {
+  //   console.log('test')
+  //   return 7
+  // } else {
+  //   return schemeObj
+  // }
+
+  
+  
   /*
     1B- Study the SQL query below running it in SQLite Studio against `data/schemes.db3`:
 
