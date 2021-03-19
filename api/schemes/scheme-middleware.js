@@ -53,8 +53,24 @@ const checkSchemeId = async (req, res, next) => {
     "message": "invalid scheme_name"
   }
 */
-const validateScheme = async (req, res, next) => {
- next()
+const validateScheme = async (req, res, next) => { 
+  const schemeName = req.body.scheme_name
+  const allSchemes = await Schemes.find()
+  const schemeNames = allSchemes.map(scheme => {
+    return scheme.scheme_name === schemeName
+  })
+
+
+
+  console.log(schemeNames)
+  console.log(schemeName)
+  if(!schemeName || schemeNames.includes(true)){
+    res.status(400).json({message:'invalid scheme_name'})
+  }else{
+    next()
+  }
+
+
 }
 
 /*

@@ -47,7 +47,6 @@ async function findById(scheme_id) { // EXERCISE B
   if(!schemeObj.scheme_name){
     return null
   }
-  console.log(schemeObj.scheme_name)
 
   if(!schemeObj.steps[0].step_id){
     const emptyScheme = {...schemeObj, steps: []}
@@ -152,13 +151,30 @@ function findSteps(scheme_id) { // EXERCISE C
           "scheme_name": "Get Rich Quick"
         }
       ]
+
+
+      select
+        st.step_id, st.step_number, st.instructions, sc.scheme_name
+      from steps as st
+      join schemes as sc
+        on sc.scheme_id = st.scheme_id
+      where st.scheme_id = 2
+      order by step_number
   */
+
+  return db('steps')
+  .join('schemes', 'schemes.scheme_id', 'steps.scheme_id' )
+  .select('steps.step_id', 'steps.step_number', 'steps.instructions', 'schemes.scheme_name')
+  .where(`steps.scheme_id`, scheme_id)
+  .orderBy('steps.step_number', 'asc')
 }
 
-function add(scheme) { // EXERCISE D
+async function add(scheme) { // EXERCISE D
   /*
     1D- This function creates a new scheme and resolves to _the newly created scheme_.
   */
+
+  return db('schemes').insert(scheme)
 }
 
 function addStep(scheme_id, step) { // EXERCISE E
