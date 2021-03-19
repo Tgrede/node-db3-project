@@ -175,15 +175,36 @@ async function add(scheme) { // EXERCISE D
   */
 
   return db('schemes').insert(scheme)
+  .then(([id]) => {
+    return db('schemes').where('scheme_id', id).first()
+  })
 }
 
-function addStep(scheme_id, step) { // EXERCISE E
+async function addStep(scheme_id, step) { // EXERCISE E
   /*
     1E- This function adds a step to the scheme with the given `scheme_id`
     and resolves to _all the steps_ belonging to the given `scheme_id`,
     including the newly created one.
   */
-}
+
+    console.log(scheme_id)
+    console.log(step)
+    step = {...step, "scheme_id":scheme_id}
+
+    return await db('steps')
+    .insert(step)
+    .then(([id]) => {
+      return db('steps')
+      .where('scheme_id', scheme_id)
+      .orderBy('step_number')
+      
+    })
+//  return db('steps').insert(step)
+//  .then(([id]) => { 
+//    return db('steps').where('steps.scheme_id', scheme_id)
+//    .orderBy('steps.step_number')
+//  })
+} 
 
 module.exports = {
   find,

@@ -55,16 +55,8 @@ const checkSchemeId = async (req, res, next) => {
 */
 const validateScheme = async (req, res, next) => { 
   const schemeName = req.body.scheme_name
-  const allSchemes = await Schemes.find()
-  const schemeNames = allSchemes.map(scheme => {
-    return scheme.scheme_name === schemeName
-  })
-
-
-
-  console.log(schemeNames)
-  console.log(schemeName)
-  if(!schemeName || schemeNames.includes(true)){
+  
+  if(!schemeName || typeof schemeName !== 'string'){
     res.status(400).json({message:'invalid scheme_name'})
   }else{
     next()
@@ -83,8 +75,24 @@ const validateScheme = async (req, res, next) => {
   }
 */
 const validateStep = async (req, res, next) => {
- next()
+ 
+ const newStepInstructions = req.body.instructions
+ const newStepStepNumber = req.body.step_number
+ if(!newStepInstructions || typeof newStepInstructions !== 'string' || isNaN(newStepStepNumber) || newStepStepNumber < 1){
+  res.status(400).json({message: "invalid step"})
+ } else{
+   next()
+ }
 }
+
+//  const newStepInstructions = req.body.instructions
+//  const newStepStepNumber = req.body.step_number
+//  if(!newStepInstructions || typeof newStepInstructions !== 'string' || isNaN(newStepStepNumber) || newStepStepNumber < 1){
+//   res.status(400).json({message: "invalid step"})
+//  } else{
+//    next()
+//  }
+// }
 
 module.exports = {
   checkSchemeId,
